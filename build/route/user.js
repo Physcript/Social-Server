@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const user_1 = __importDefault(require("../controller/user"));
+const express_1 = __importDefault(require("express"));
+const multer_1 = __importDefault(require("multer"));
+const create_1 = require("../middleware/user/functions/create");
+const login_1 = require("../middleware/user/functions/login");
+const logout_1 = require("../middleware/user/functions/logout");
+const create_2 = require("../middleware/userCompletion/functions/create");
+const update_1 = require("../middleware/userCompletion/functions/update");
+const findMe_1 = require("../middleware/user/functions/findMe");
+const login_2 = require("../middleware/auth/functions/login");
+const router = express_1.default.Router();
+const upload = (0, multer_1.default)();
+router.post('/create', create_1.create, user_1.default.create);
+router.post('/login', login_1.login, user_1.default.login);
+router.post('/complete', upload.array('img'), create_2.create, user_1.default.complete);
+router.post('/complete_update', login_2.login, update_1.update, user_1.default.complete_update);
+router.post('/logout', login_2.login, logout_1.logout, user_1.default.logout);
+router.post('/:uid', findMe_1.findMe, user_1.default.findOne);
+exports.default = router;
