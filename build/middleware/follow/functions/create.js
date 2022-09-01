@@ -9,21 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findPost = void 0;
-const post_1 = require("../../../class/post");
-function findPost(req, res, next) {
+exports.create = void 0;
+const follow_1 = require("../../../class/follow");
+function create(req, res, next) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const { limit } = req.body;
-        const { uid } = (_a = req.params) !== null && _a !== void 0 ? _a : '';
-        if (limit == undefined) {
-            yield post_1.__post.findUid(res, uid);
-        }
-        else {
-            yield post_1.__post.findUid(res, uid, limit);
-        }
+        // need headers token
+        // need toFollow id of followed one
+        // validate via token
+        const { toFollow } = req.body;
+        const { uid } = (_a = res.locals.user) !== null && _a !== void 0 ? _a : '';
+        yield follow_1.__follow.follow_unfollow(uid, toFollow);
         next();
         return;
     });
 }
-exports.findPost = findPost;
+exports.create = create;
