@@ -12,8 +12,9 @@ export async function create (req: Request, res: Response, next: NextFunction) {
   const { toFollow } = req.body  
   const { uid } = res.locals.user ?? ''
 
-  await __follow.follow_unfollow(uid,toFollow) 
-  
+  const result = await __follow.follow_unfollow(uid,toFollow) 
+  res.locals.result = result
+
   next()
   return
 }

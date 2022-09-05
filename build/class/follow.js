@@ -47,5 +47,14 @@ class __Follow {
             return;
         });
     }
+    check(uid, toFollow) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const follow = yield Follow_1.default.findOne({ uid, toFollow });
+            if (follow) {
+                return true;
+            }
+            return false;
+        });
+    }
 }
 exports.__follow = new __Follow();

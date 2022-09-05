@@ -5,5 +5,10 @@ exports.default = {
         res.status(200).json({
             message: 'Followed'
         });
+    }),
+    check: ((req, res) => {
+        res.status(200).json({
+            message: res.locals.result
+        });
     })
 };

@@ -6,6 +6,7 @@ interface IFollow {
   follow(uid: string, toFollow: string): Promise<any> 
   unfollow(uid: string, toUnFollow: string): Promise<any>
   follow_unfollow(uid: string, _uid: string): Promise<any>
+  check(uid: string, toFollow: string): Promise<any>
 } 
 class __Follow implements IFollow {
   constructor(){}
@@ -35,6 +36,16 @@ class __Follow implements IFollow {
       await Follow.deleteOne({ uid, toFollow: toUnFollow })
 
     return
+  }
+
+  async check(uid: string, toFollow: string) {
+    
+    const follow = await Follow.findOne({ uid, toFollow })
+    if(follow)
+      {
+        return true
+      }
+    return false
   }
 }
 

@@ -19,7 +19,8 @@ function create(req, res, next) {
         // validate via token
         const { toFollow } = req.body;
         const { uid } = (_a = res.locals.user) !== null && _a !== void 0 ? _a : '';
-        yield follow_1.__follow.follow_unfollow(uid, toFollow);
+        const result = yield follow_1.__follow.follow_unfollow(uid, toFollow);
+        res.locals.result = result;
         next();
         return;
     });

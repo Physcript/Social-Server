@@ -7,6 +7,10 @@ export default {
     res.status(200).json({
       message: 'Followed'
     })
-    
+  }),
+  check: ((req: Request, res: Response) => {
+    res.status(200).json({
+      message: res.locals.result 
+    })
   })
 }
