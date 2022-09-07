@@ -16,10 +16,10 @@ function check(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const { toFollow } = (_a = req.body) !== null && _a !== void 0 ? _a : '';
         const { uid } = (_b = res.locals.user) !== null && _b !== void 0 ? _b : '';
-        console.log(toFollow);
-        console.log(uid);
         const result = yield follow_1.__follow.check(uid, toFollow);
+        const count = yield follow_1.__follow.countFollow(toFollow);
         res.locals.result = yield result;
+        res.locals.count = yield count;
         next();
         return;
     });

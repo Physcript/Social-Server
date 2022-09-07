@@ -56,5 +56,11 @@ class __Follow {
             return false;
         });
     }
+    countFollow(_uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const count = yield Follow_1.default.find({ toFollow: _uid }).count();
+            return count;
+        });
+    }
 }
 exports.__follow = new __Follow();

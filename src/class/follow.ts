@@ -7,6 +7,7 @@ interface IFollow {
   unfollow(uid: string, toUnFollow: string): Promise<any>
   follow_unfollow(uid: string, _uid: string): Promise<any>
   check(uid: string, toFollow: string): Promise<any>
+  countFollow(_uid: string): Promise<any>
 } 
 class __Follow implements IFollow {
   constructor(){}
@@ -47,6 +48,11 @@ class __Follow implements IFollow {
       }
     return false
   }
+
+  async countFollow(_uid: string) {
+    const count = await Follow.find({toFollow: _uid }).count()
+    return count
+  } 
 }
 
 
