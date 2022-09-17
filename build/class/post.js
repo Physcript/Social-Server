@@ -46,5 +46,61 @@ class __Post {
             return;
         });
     }
+    mainPost(res, uid, limit = 10) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // find post that i followed and my followed should be showned in main page
+            // get list of i followed
+            const myData = uid;
+            const post = yield Post_1.default.aggregate([
+                {
+                    $project: {
+                        "_id": "$_id",
+                        "body": "$body",
+                        "fromUid": "$fromUid",
+                        "toUid": "$toUid",
+                        "pid": "$pid",
+                        "createdAt": "$createdAt",
+                        "updatedAt": "$updatedAt"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'follows',
+                        localField: 'fromUid',
+                        foreignField: 'uid',
+                        as: 'iFollowed'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        body: 1,
+                        fromUid: 1,
+                        toUid: 1,
+                        pid: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        myFollow: ['$iFollowed.toFollow']
+                    }
+                },
+                {
+                    $unwind: '$myFollow'
+                },
+                {
+                    $match: {
+                        fromUid: { $elementMatch: { my: '$myFollow' } }
+                    }
+                },
+                {
+                    $project: {
+                        myFollow: 1,
+                        body: 1,
+                    }
+                }
+            ]);
+            console.log(post);
+            return;
+        });
+    }
 }
 exports.__post = new __Post();
