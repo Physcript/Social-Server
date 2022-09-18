@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
 import Post from '../model/Post'
+import Follow from '../model/Follow'
 
 interface ICPost {
   create(req: Request, res: Response): Promise<any>,
@@ -51,7 +52,17 @@ class __Post implements ICPost {
     // find post that i followed and my followed should be showned in main page
     // get list of i followed
     const myData = uid
+    const iFolloweds = await Follow.find({ uid })
 
+    let dataF: string[] = []
+    iFolloweds.forEach(setFollow)
+    
+
+    function setFollow(item: any) {
+      dataF.push(item.toFollow) 
+    }
+    
+    dataF.push(uid)
     const post = await Post.aggregate([
       
       {
@@ -66,14 +77,6 @@ class __Post implements ICPost {
         }
       },
       {
-        $lookup: {
-          from: 'follows',
-          localField: 'fromUid',
-          foreignField: 'uid',
-          as: 'iFollowed'
-        }
-      },
-      {
         $project: {
           _id: 1,
           body: 1,
@@ -82,21 +85,41 @@ class __Post implements ICPost {
           pid: 1,
           createdAt: 1,
           updatedAt: 1,
-          myFollow: ['$iFollowed.toFollow']
         }
       },
       {
-        $unwind: '$myFollow'
+        $lookup: {
+          from: 'users',
+          localField: 'toUid',
+          foreignField: 'uid',
+          as: 'iUser'
+        }
+      },
+      {
+        $unwind: '$iUser'
       },
       {
         $match: {
-          fromUid: {$elementMatch: {my: '$myFollow'} }
+          'fromUid': { 
+            $in: dataF 
+          }
         }
       },
       {
         $project: {
-          myFollow: 1,
           body: 1,
+          fromUid: 1,
+          toUid: 1,
+          pid: 1,
+          userData: {
+            'firstName': '$iUser.firstName',
+            'lastName': '$iUser.lastName',
+            'avatar': '$iUser.avatar',
+            'email': '$iUser.email',
+            'uid': '$iUser.uid'
+          },
+          createdAt: 1,
+          updatedAt: 1
         }
       }
     ])

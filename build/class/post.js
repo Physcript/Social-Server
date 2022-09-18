@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.__post = void 0;
 const Post_1 = __importDefault(require("../model/Post"));
+const Follow_1 = __importDefault(require("../model/Follow"));
 class __Post {
     constructor() {
     }
@@ -51,6 +52,13 @@ class __Post {
             // find post that i followed and my followed should be showned in main page
             // get list of i followed
             const myData = uid;
+            const iFolloweds = yield Follow_1.default.find({ uid });
+            let dataF = [];
+            iFolloweds.forEach(setFollow);
+            function setFollow(item) {
+                dataF.push(item.toFollow);
+            }
+            dataF.push(uid);
             const post = yield Post_1.default.aggregate([
                 {
                     $project: {
@@ -64,14 +72,6 @@ class __Post {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'follows',
-                        localField: 'fromUid',
-                        foreignField: 'uid',
-                        as: 'iFollowed'
-                    }
-                },
-                {
                     $project: {
                         _id: 1,
                         body: 1,
@@ -80,21 +80,41 @@ class __Post {
                         pid: 1,
                         createdAt: 1,
                         updatedAt: 1,
-                        myFollow: ['$iFollowed.toFollow']
                     }
                 },
                 {
-                    $unwind: '$myFollow'
+                    $lookup: {
+                        from: 'users',
+                        localField: 'toUid',
+                        foreignField: 'uid',
+                        as: 'iUser'
+                    }
+                },
+                {
+                    $unwind: '$iUser'
                 },
                 {
                     $match: {
-                        fromUid: { $elementMatch: { my: '$myFollow' } }
+                        'fromUid': {
+                            $in: dataF
+                        }
                     }
                 },
                 {
                     $project: {
-                        myFollow: 1,
                         body: 1,
+                        fromUid: 1,
+                        toUid: 1,
+                        pid: 1,
+                        userData: {
+                            'firstName': '$iUser.firstName',
+                            'lastName': '$iUser.lastName',
+                            'avatar': '$iUser.avatar',
+                            'email': '$iUser.email',
+                            'uid': '$iUser.uid'
+                        },
+                        createdAt: 1,
+                        updatedAt: 1
                     }
                 }
             ]);
