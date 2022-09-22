@@ -118,8 +118,7 @@ class __Post {
                     }
                 }
             ]);
-            console.log(post);
-            return;
+            return post;
         });
     }
 }

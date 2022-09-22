@@ -8,9 +8,10 @@ const post_1 = __importDefault(require("../controller/post"));
 const create_1 = require("../middleware/post/functions/create");
 const findPost_1 = require("../middleware/post/functions/findPost");
 const main_1 = require("../middleware/post/functions/main");
+const verify_1 = require("../middleware/auth/functions/verify");
 const router = express_1.default.Router();
 // http://localhost:1337/api/p/
 router.post('/create', create_1.create, post_1.default.create);
 router.post('/:uid', findPost_1.findPost, post_1.default.findUid);
-router.get('/main', main_1.main, post_1.default.main);
+router.get('/main', verify_1.verify, main_1.main, post_1.default.main);
 exports.default = router;

@@ -123,8 +123,8 @@ class __Post implements ICPost {
         }
       }
     ])
-    console.log(post)
-    return
+    
+    return post
   }  
 
 } 

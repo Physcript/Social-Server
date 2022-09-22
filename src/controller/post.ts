@@ -20,6 +20,7 @@ export default {
     res.locals.count = undefined
   }),
   main: ((req: Request, res: Response) => {
+    console.log(res.locals.post)
     res.status(200).json({
       message: {
         post: res.locals.post
